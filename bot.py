@@ -19,7 +19,7 @@ def clear(): #this clears screen
 clear()
 if token == '':
     token = input(MAGENTA + "Enter discord token: ")
-version = "1.0"
+version = "1.1"
 main = (MAGENTA + ''' 
 Made by jam
 
