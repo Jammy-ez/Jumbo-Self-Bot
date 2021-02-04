@@ -70,10 +70,6 @@ class basic(commands.Cog):
         embed.add_field(name="Noodle_img", value="\nImage of noodle", inline=False)
         embed.set_thumbnail(url=JumboPic)
         await ctx.send(embed=embed)
-        embed = discord.Embed(description=f"`dog_img` - image of dog\n`cat_img` - image of cat\n`meme` - memen`wink` - wink gif\n`hug` - hug gif\n`oreo_img` -  img of oreo\n`jam_img` - image of the developer of this bot\n`noodle_img` - image of noodle", color=ctx.author.color)
-        embed.set_image(url="https://cdn.discordapp.com/attachments/795757273153929220/803993863483424828/logo.jpg")
-        await ctx.send(embed=embed)
-
     @commands.command()
     async def fact(self, ctx):
         await ctx.message.delete()

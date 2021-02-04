@@ -10,7 +10,7 @@ class selfbotcmd(commands.Cog):
 
     @commands.Cog.listener()
     async def on_ready(self):
-            print("[!]self_bot cog online")
+            print("[!]nuke cog online")
     async def on_message(ctx, message):
         if copycat == 'True':
             await ctx.send_message(message.channel, message.content)
