@@ -10,17 +10,48 @@ import numpy
 from colorama import Fore, Back, Style
 import re
 import requests
+import sys
+import json
+
+with open('config.json') as f:
+    config = json.load(f)
+
 JumboPic = "https://cdn.discordapp.com/attachments/795757273153929220/803993863483424828/logo.jpg"
-token = ""
+token = config.get('token')
+password = config.get('password')
+prefix = config.get('prefix')
+version = "1.2"
 BLUE, RED, WHITE, YELLOW, MAGENTA, GREEN, END = '\33[1;94m', '\033[1;91m', '\33[1;97m', '\33[1;93m', '\033[1;35m', '\033[1;32m', '\033[0m'
-client = commands.Bot(command_prefix = '.', self_bot=True)
+
 def clear(): #this clears screen
         _ = system('cls')
 clear()
+
 if token == '':
-    token = input(MAGENTA + "Enter discord token: ")
-version = "1.1"
-main = (MAGENTA + ''' 
+    print(RED + "No token has been pasted in config file")
+if password == '':
+    print(RED + "No password has been given in config file")
+if prefix == '':
+    print(RED + "No prefix given in config file")
+
+
+client = commands.Bot(command_prefix = prefix, self_bot=True)
+clear()
+discordlogo = ('''
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+⣿⣿⣿⡟⠁⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠈⢹⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⠄⢠⣴⣾⣵⣶⣶⣾⣿⣦⡄⠄⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⢀⣾⣿⣿⢿⣿⣿⣿⣿⣿⣿⡄⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⢸⣿⣿⣧⣀⣼⣿⣄⣠⣿⣿⣿⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⠘⠻⢷⡯⠛⠛⠛⠛⢫⣿⠟⠛⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⡇⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⣧⡀⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⠄⢡⣀⠄⠄⢸⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣶⣆⣸⣿⣿⣿
+⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿⣿
+''')
+main = (BLUE + ''' 
+
 Made by jam
 
      ██╗██╗   ██╗███╗   ███╗██████╗  ██████╗ 
@@ -39,10 +70,17 @@ Made by jam
 ''')
 @client.event
 async def on_ready():
+    print(BLUE + discordlogo)
+    time.sleep(1)
+    clear()
+
     print(main)
-    print("Version --> " + version)
-    print(f"Logged in as --> {client.user.name}")
-    print("[!]Bot online")
+    print(GREEN + "[+]Version: " + MAGENTA + version)
+    print(GREEN + "[+]Logged in as:" + MAGENTA +  f" {client.user.name}")
+    print(GREEN + f"[+]Prefix: " + MAGENTA + prefix)
+    print(RED + "[!]Bot online")
+    time.sleep(1)
+    print(RED + "[!]Cogs functioning")
 
 client.remove_command('help')
 @client.command()
@@ -64,22 +102,7 @@ for filename in os.listdir('./cogs'):
 
 @client.event
 async def on_command_error(ctx, error):
-    error_str = str(error)
-    error = getattr(error, 'original', error)
-    if isinstance(error, commands.CommandNotFound):
-        await ctx.send(f"[ERROR] Command not found!", delete_after=3)
-    elif isinstance(error, commands.CheckFailure):
-        await ctx.send('[ERROR]: You\'re missing permission to execute this command', delete_after=3)
-    elif isinstance(error, commands.MissingRequiredArgument):
-        await ctx.send(f"[ERROR]: Missing arguments: {error}", delete_after=3)
-    elif isinstance(error, numpy.AxisError):
-        await ctx.send('Invalid Image', delete_after=3)
-    elif isinstance(error, discord.errors.Forbidden):
-        await ctx.send(f"[ERROR]: 404 Forbidden Access: {error}", delete_after=3)
-    elif "Cannot send an empty message" in error_str:
-        await ctx.send('[ERROR]: Message contents cannot be null', delete_after=3)
-    else:
-        ctx.send(f'[ERROR]: unable to find error')
+    print(RED + "[-]Commands error")
 @client.command()
 async def basic(ctx):
     embed = discord.Embed(color=ctx.author.color)
@@ -88,4 +111,21 @@ async def basic(ctx):
     embed.add_field(name="Help", value="\nHelp message", inline=False)
     embed.set_thumbnail(url=JumboPic)
     await ctx.send(embed=embed)
+@client.command()
+async def purge(ctx, amount: int = None):
+    await ctx.message.delete()
+    if amount is None:
+        async for message in ctx.message.channel.history(limit=999).filter(lambda m: m.author == client.user).map(
+                lambda m: m):
+            try:
+                await message.delete()
+            except:
+                pass
+    else:
+        async for message in ctx.message.channel.history(limit=amount).filter(lambda m: m.author == client.user).map(
+                lambda m: m):
+            try:
+                await message.delete()
+            except:
+                pass
 client.run(token, bot=False)
